@@ -40,6 +40,11 @@
     additionalProperties: false,
   },
 
+  // 场景会给 purple agent 绑一个 proxy（reviewer/回调用）；optional 表示不绑也能跑
+  slots: {
+    proxy: { kind: "a2a", optional: true },
+  },
+
   // 对外提供的能力
   provides: {
     a2a: { kind: "a2a", endpoint: "endpoint" },
