@@ -13,10 +13,10 @@
       "--port",
       "9009",
     ],
+    // 只引用确实需要的配置项。Amber 会对 env 做 ${config.X} 插值，
+    // 而提交时空值的 secret 字段不会出现在 config 里 → 插值失败 → 容器启动即退出。
     env: {
       AGENT_LLM: "${config.agent_llm}",
-      OPENAI_API_KEY: "${config.openai_api_key}",
-      GEMINI_API_KEY: "${config.gemini_api_key}",
       DEEPSEEK_API_KEY: "${config.deepseek_api_key}",
       LOG_LEVEL: "INFO",
     },
@@ -28,12 +28,11 @@
   },
 
   // 部署方（AgentBeats）需要提供的配置项；密钥类字段标记 secret: true
+  // 注意：只在下面声明的字段才会出现在提交表单里；声明了但留空会导致容器起不来。
   config_schema: {
     type: "object",
     properties: {
       agent_llm: { type: "string", default: "deepseek/deepseek-chat" },
-      openai_api_key: { type: "string", secret: true, default: "" },
-      gemini_api_key: { type: "string", secret: true, default: "" },
       deepseek_api_key: { type: "string", secret: true, default: "" },
     },
     required: ["agent_llm"],
